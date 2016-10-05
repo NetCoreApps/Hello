@@ -82,7 +82,7 @@
         $("#txtName").keyup(function () {
             $.getJSON("/hello/" + this.value)
                 .then(function (r) {
-                    $("#result").html(r.Result);
+                    $("#result").html(r.result);
                 });
         });
     </script>
