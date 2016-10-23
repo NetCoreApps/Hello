@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Funq;
 using ServiceStack;
-using System.Reflection;
 
 namespace WebApp
 {
@@ -62,9 +59,9 @@ namespace WebApp
     public class AppHost : AppHostBase
     {
         public AppHost()
-            : base("ServiceStack + .NET Core Web App", typeof(MyServices).GetTypeInfo().Assembly) { }
+            : base("ServiceStack + .NET Core Web App", typeof(MyServices).GetAssembly()) { }
 
-        public override void Configure(Funq.Container container)
+        public override void Configure(Container container)
         {
         }
     }

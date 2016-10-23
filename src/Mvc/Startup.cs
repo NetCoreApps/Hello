@@ -1,9 +1,9 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Funq;
 using ServiceStack;
 
 namespace Mvc
@@ -79,9 +79,9 @@ namespace Mvc
     public class AppHost : AppHostBase
     {
         public AppHost() 
-            : base("ServiceStack + .NET Core MVC", typeof(MyServices).GetTypeInfo().Assembly) {}
+            : base("ServiceStack + .NET Core MVC", typeof(MyServices).GetAssembly()) {}
 
-        public override void Configure(Funq.Container container)
+        public override void Configure(Container container)
         {
         }
     }

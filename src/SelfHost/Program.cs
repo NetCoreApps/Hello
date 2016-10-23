@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Funq;
 using ServiceStack;
 
 namespace SelfHost
@@ -67,9 +68,9 @@ namespace SelfHost
     public class AppHost : AppHostBase
     {
         public AppHost()
-            : base("ServiceStack + .NET Core Self Host", typeof(MyServices).GetTypeInfo().Assembly) { }
+            : base("ServiceStack + .NET Core Self Host", typeof(MyServices).GetAssembly()) { }
 
-        public override void Configure(Funq.Container container)
+        public override void Configure(Container container)
         {
         }
     }
