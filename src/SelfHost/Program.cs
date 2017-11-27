@@ -17,7 +17,7 @@ namespace SelfHost
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
-                .UseUrls("http://localhost:55000/")
+                .UseUrls("http://localhost:5000/")
                 .Build();
 
             host.Run();
@@ -68,7 +68,7 @@ namespace SelfHost
     public class AppHost : AppHostBase
     {
         public AppHost()
-            : base("ServiceStack + .NET Core Self Host", typeof(MyServices).GetAssembly()) { }
+            : base("ServiceStack + .NET Core Self Host", typeof(MyServices).Assembly) { }
 
         public override void Configure(Container container)
         {

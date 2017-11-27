@@ -1,44 +1,34 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Funq;
 using ServiceStack;
+using ServiceStack.Configuration;
 
 namespace Mvc
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
-
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
             }
             else
             {
@@ -47,7 +37,10 @@ namespace Mvc
 
             app.UseStaticFiles();
 
-            app.UseServiceStack(new AppHost());
+            app.UseServiceStack(new AppHost 
+            {
+                AppSettings = new NetCoreAppSettings(Configuration)
+            });
 
             app.UseMvc(routes =>
             {
@@ -72,14 +65,16 @@ namespace Mvc
 
     public class MyServices : Service
     {
-        public object Any(Hello request) => 
-            new HelloResponse { Result = $"Hello, {request.Name}!" };
+        public object Any(Hello request)
+        {
+            return new HelloResponse { Result = $"Hello, {request.Name}!" };
+        }
     }
 
     public class AppHost : AppHostBase
     {
         public AppHost() 
-            : base("ServiceStack + .NET Core MVC", typeof(MyServices).GetAssembly()) {}
+            : base("ServiceStack + .NET Core MVC", typeof(MyServices).Assembly) {}
 
         public override void Configure(Container container)
         {
